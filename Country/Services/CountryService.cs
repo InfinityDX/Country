@@ -1,7 +1,7 @@
 ﻿using Country.Controllers;
 using Country.Models;
 using Country.Services.Interfaces;
-using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace Country.Services
 {
@@ -19,11 +19,11 @@ namespace Country.Services
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
-                CountryInfo countryInfo = JsonSerializer.Deserialize<CountryInfo>(content.Substring(1,content.Length -2));
-                return new BaseResponse<CountryInfo>(0, "Success", countryInfo);
+                var countryInfo = JsonConvert.DeserializeObject<List<CountryInfo>>(content);
+                return new BaseResponse<CountryInfo>(0, "Success", countryInfo[0]);
             }
 
-            return new BaseResponse<CountryInfo>(11, "Getting data from restcountries.com error!", new CountryInfo("", "", "", 0, "", ""));
+            return new BaseResponse<CountryInfo>(11, "Getting data from restcountries.com error!", new CountryInfo());
         }
     }
 }
